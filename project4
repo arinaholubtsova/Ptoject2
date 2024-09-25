@@ -1,0 +1,52 @@
+using System;
+using System.Net;
+using System.Net.Mail;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.WriteLine("Введіть email-адресу отримувача:");
+        string recipientEmail = Console.ReadLine();
+
+        Console.WriteLine("Введіть тему повідомлення:");
+        string subject = Console.ReadLine();
+
+        string firstName = "Орина";
+        string lastName = "Голубцова";
+        string messageBody = $"Дата та час: {DateTime.Now}\nІм'я: {firstName}\nПрізвище: {lastName}";
+
+        try
+        {
+            SendEmail(recipientEmail, subject, messageBody);
+            Console.WriteLine("Повідомлення відправлено успішно.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Помилка при відправці повідомлення: {ex.Message}");
+        }
+    }
+
+    static void SendEmail(string recipientEmail, string subject, string messageBody)
+    {
+        string fromEmail = ""; // мої данні, пошта
+        string password = "";  //пароль
+
+        SmtpClient client = new SmtpClient("smtp.gmail.com", 587)
+        {
+            Credentials = new NetworkCredential(fromEmail, password),
+            EnableSsl = true
+        };
+
+        MailMessage mailMessage = new MailMessage
+        {
+            From = new MailAddress(fromEmail),
+            Subject = subject,
+            Body = messageBody
+        };
+
+        mailMessage.To.Add(recipientEmail);
+
+        client.Send(mailMessage);
+    }
+}
